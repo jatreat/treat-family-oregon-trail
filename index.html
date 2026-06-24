@@ -317,7 +317,11 @@ table.store td.r{text-align:right; white-space:nowrap}
 </div>
 <script>
 /* ============ error reporter (visible, not silent) ============ */
-window.onerror = function(msg, src, line){
+window.onerror = function(msg, src, line, col, err){
+  // Ignore noise from browser extensions and other cross-origin scripts:
+  // browsers sanitize those to "Script error." at line 0 with no real source.
+  // Only surface genuine errors coming from the game's own code.
+  if(!line || msg==='Script error.' || msg==='Script error' || /-extension:\/\//.test(src||'')){ return false; }
   var e = document.getElementById('errbar');
   if(e){ e.style.display='block'; e.textContent='⚠️ ' + msg + ' (line ' + line + ') — tell Josh to tell Claude.'; }
 };
